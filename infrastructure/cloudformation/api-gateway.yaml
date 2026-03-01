@@ -1,0 +1,124 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'API Gateway for PoultryMitra'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+
+Resources:
+  PoultryMitraAPI:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Sub 'poultry-mitra-api-${Environment}'
+      Description: REST API for PoultryMitra application
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  ApiAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      Name: CognitoAuthorizer
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Authorization
+      RestApiId: !Ref PoultryMitraAPI
+      ProviderARNs:
+        - !GetAtt UserPool.Arn
+
+  # API Resources
+  ApiResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+      ParentId: !GetAtt PoultryMitraAPI.RootResourceId
+      PathPart: api
+
+  AdvisoryResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+      ParentId: !Ref ApiResource
+      PathPart: advisory
+
+  DiseaseResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+      ParentId: !Ref ApiResource
+      PathPart: disease
+
+  FarmResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+      ParentId: !Ref ApiResource
+      PathPart: farm
+
+  BreedResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+      ParentId: !Ref ApiResource
+      PathPart: breed
+
+  BusinessResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+      ParentId: !Ref ApiResource
+      PathPart: business
+
+  InvoiceResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+      ParentId: !Ref ApiResource
+      PathPart: invoice
+
+  HealthResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+      ParentId: !Ref ApiResource
+      PathPart: health
+
+  # Deployment
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - AdvisoryResource
+      - DiseaseResource
+    Properties:
+      RestApiId: !Ref PoultryMitraAPI
+
+  ApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: !Ref Environment
+      RestApiId: !Ref PoultryMitraAPI
+      DeploymentId: !Ref ApiDeployment
+      TracingEnabled: true
+      MethodSettings:
+        - ResourcePath: '/*'
+          HttpMethod: '*'
+          LoggingLevel: INFO
+          DataTraceEnabled: true
+          MetricsEnabled: true
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub 'https://${PoultryMitraAPI}.execute-api.${AWS::Region}.amazonaws.com/${Environment}'
+    Export:
+      Name: !Sub '${AWS::StackName}-ApiEndpoint'
+
+  ApiId:
+    Description: API Gateway ID
+    Value: !Ref PoultryMitraAPI
+    Export:
+      Name: !Sub '${AWS::StackName}-ApiId'

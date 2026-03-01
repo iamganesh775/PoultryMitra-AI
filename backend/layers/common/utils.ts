@@ -1,0 +1,27 @@
+import { APIGatewayProxyResult } from 'aws-lambda';
+
+export const createResponse = (
+  statusCode: number,
+  body: any
+): APIGatewayProxyResult => {
+  return {
+    statusCode,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true,
+    },
+    body: JSON.stringify(body),
+  };
+};
+
+export const createErrorResponse = (
+  statusCode: number,
+  message: string
+): APIGatewayProxyResult => {
+  return createResponse(statusCode, { error: message });
+};
+
+export const getUserId = (event: any): string => {
+  return event.requestContext?.authorizer?.claims?.sub || 'anonymous';
+};

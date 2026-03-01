@@ -1,0 +1,42 @@
+{
+  "app": {
+    "title": "PoultryMitra",
+    "tagline": "Smart Poultry Farm Management"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "advisory": "AI Advisory",
+    "diseaseScanner": "Disease Scanner",
+    "breedRecommendation": "Breed Recommendation",
+    "businessPlanner": "Business Planner",
+    "invoices": "Invoices",
+    "healthScheduler": "Health Scheduler",
+    "signOut": "Sign Out"
+  },
+  "dashboard": {
+    "title": "Farm Dashboard",
+    "totalBirds": "Total Birds",
+    "activeBreeds": "Active Breeds",
+    "healthStatus": "Health Status",
+    "monthlyRevenue": "Monthly Revenue"
+  },
+  "advisory": {
+    "title": "AI Poultry Advisory",
+    "placeholder": "Ask me anything about poultry farming...",
+    "send": "Send"
+  },
+  "diseaseScanner": {
+    "title": "Disease Scanner",
+    "upload": "Upload Image",
+    "scanning": "Scanning...",
+    "results": "Detection Results"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit"
+  }
+}

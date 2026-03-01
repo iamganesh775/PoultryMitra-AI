@@ -1,0 +1,42 @@
+{
+  "app": {
+    "title": "पोल्ट्रीमित्र",
+    "tagline": "स्मार्ट पोल्ट्री फार्म प्रबंधन"
+  },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "advisory": "एआई सलाहकार",
+    "diseaseScanner": "रोग स्कैनर",
+    "breedRecommendation": "नस्ल सिफारिश",
+    "businessPlanner": "व्यवसाय योजनाकार",
+    "invoices": "चालान",
+    "healthScheduler": "स्वास्थ्य अनुसूची",
+    "signOut": "साइन आउट"
+  },
+  "dashboard": {
+    "title": "फार्म डैशबोर्ड",
+    "totalBirds": "कुल पक्षी",
+    "activeBreeds": "सक्रिय नस्लें",
+    "healthStatus": "स्वास्थ्य स्थिति",
+    "monthlyRevenue": "मासिक राजस्व"
+  },
+  "advisory": {
+    "title": "एआई पोल्ट्री सलाहकार",
+    "placeholder": "पोल्ट्री फार्मिंग के बारे में कुछ भी पूछें...",
+    "send": "भेजें"
+  },
+  "diseaseScanner": {
+    "title": "रोग स्कैनर",
+    "upload": "छवि अपलोड करें",
+    "scanning": "स्कैन कर रहे हैं...",
+    "results": "पहचान परिणाम"
+  },
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "एक त्रुटि हुई",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें"
+  }
+}

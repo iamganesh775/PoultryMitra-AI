@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SNS Topics for PoultryMitra Notifications'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+
+Resources:
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub 'poultry-mitra-notifications-${Environment}'
+      DisplayName: PoultryMitra Notifications
+      Tags:
+        - Key: Application
+          Value: PoultryMitra
+        - Key: Environment
+          Value: !Ref Environment
+
+  NotificationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref NotificationTopic
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - SNS:Publish
+            Resource: !Ref NotificationTopic
+
+  VaccinationAlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub 'poultry-mitra-vaccination-alerts-${Environment}'
+      DisplayName: Vaccination Reminders
+
+  DiseaseAlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub 'poultry-mitra-disease-alerts-${Environment}'
+      DisplayName: Disease Alerts
+
+Outputs:
+  NotificationTopicArn:
+    Description: SNS Topic ARN for notifications
+    Value: !Ref NotificationTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-NotificationTopicArn'
+
+  VaccinationAlertTopicArn:
+    Value: !Ref VaccinationAlertTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-VaccinationAlertTopicArn'
+
+  DiseaseAlertTopicArn:
+    Value: !Ref DiseaseAlertTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-DiseaseAlertTopicArn'

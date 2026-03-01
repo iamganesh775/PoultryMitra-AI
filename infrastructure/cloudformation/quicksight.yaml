@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'QuickSight Analytics for PoultryMitra'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+  QuickSightUserArn:
+    Type: String
+    Description: QuickSight user ARN
+
+Resources:
+  QuickSightDataSource:
+    Type: AWS::QuickSight::DataSource
+    Properties:
+      DataSourceId: !Sub 'poultry-mitra-datasource-${Environment}'
+      Name: PoultryMitra DynamoDB Data
+      Type: DYNAMODB
+      DataSourceParameters:
+        DynamoDBParameters:
+          TableName: !Sub 'poultry-mitra-farms-${Environment}'
+      AwsAccountId: !Ref AWS::AccountId
+      Permissions:
+        - Principal: !Ref QuickSightUserArn
+          Actions:
+            - quicksight:DescribeDataSource
+            - quicksight:DescribeDataSourcePermissions
+            - quicksight:PassDataSource
+
+  FarmAnalyticsDataSet:
+    Type: AWS::QuickSight::DataSet
+    Properties:
+      DataSetId: !Sub 'farm-analytics-${Environment}'
+      Name: Farm Analytics
+      AwsAccountId: !Ref AWS::AccountId
+      ImportMode: DIRECT_QUERY
+      PhysicalTableMap:
+        FarmsTable:
+          CustomSql:
+            DataSourceArn: !GetAtt QuickSightDataSource.Arn
+            Name: Farms Data
+            SqlQuery: SELECT * FROM farms
+            Columns:
+              - Name: userId
+                Type: STRING
+              - Name: totalBirds
+                Type: INTEGER
+              - Name: monthlyRevenue
+                Type: DECIMAL
+      Permissions:
+        - Principal: !Ref QuickSightUserArn
+          Actions:
+            - quicksight:DescribeDataSet
+            - quicksight:DescribeDataSetPermissions
+            - quicksight:PassDataSet
+            - quicksight:DescribeIngestion
+            - quicksight:ListIngestions
+
+  FarmDashboard:
+    Type: AWS::QuickSight::Dashboard
+    Properties:
+      DashboardId: !Sub 'farm-dashboard-${Environment}'
+      Name: PoultryMitra Farm Analytics
+      AwsAccountId: !Ref AWS::AccountId
+      Permissions:
+        - Principal: !Ref QuickSightUserArn
+          Actions:
+            - quicksight:DescribeDashboard
+            - quicksight:ListDashboardVersions
+            - quicksight:QueryDashboard
+
+Outputs:
+  DataSourceId:
+    Description: QuickSight Data Source ID
+    Value: !Ref QuickSightDataSource
+    Export:
+      Name: !Sub '${AWS::StackName}-DataSourceId'
+
+  DashboardId:
+    Description: QuickSight Dashboard ID
+    Value: !Ref FarmDashboard
+    Export:
+      Name: !Sub '${AWS::StackName}-DashboardId'
